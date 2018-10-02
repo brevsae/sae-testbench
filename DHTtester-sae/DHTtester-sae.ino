@@ -23,16 +23,19 @@
 // as the current DHT reading algorithm adjusts itself to work on faster procs.
 DHT dht(DHTPIN, DHTTYPE);
 DHT dhte(EMANUEL, DHTTYPE);
+int PKILL = 5;
+float TEMPLIMIT = 29.0;
 void setup() {
   Serial.begin(9600);
   Serial.println("Formula SAE promises no cell will reach 1000000 C!");
 
   dht.begin();
+  dhte.begin();
 }
 
 void loop() {
   // Wait a few seconds between measurements.
-  delay(1000);
+  delay(2000);
   //Print out left (non-Emanuel first)!
   // Reading temperature or humidity takes about 250 milliseconds!
   // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
@@ -42,6 +45,11 @@ void loop() {
   // Read temperature as Fahrenheit (isFahrenheit = true)
   float fleft = dht.readTemperature(true);
 
+
+  if (tleft > TEMPLIMIT){
+    Serial.println("SHUTTING DOWN");
+    return PKILL;
+  } 
   // Check if any reads failed and exit early (to try again).
   if (isnan(hleft) || isnan(tleft) || isnan(fleft)) {
     Serial.println("Failed to read from DHT sensor!");
@@ -53,15 +61,15 @@ void loop() {
   // Compute heat index in Celsius (isFahreheit = false)
   float hicleft = dht.computeHeatIndex(tleft, hleft, false);
 
-  Serial.print("Humidity: ");
+  Serial.print("Left Humidity: ");
   Serial.print(hleft);
   Serial.print(" %\t");
-  Serial.print("Temperature: ");
+  Serial.print("Left Temperature: ");
   Serial.print(tleft);
   Serial.print(" *C ");
   Serial.print(fleft);
   Serial.print(" *F\t");
-  Serial.print("Heat index: ");
+  Serial.print("Left Heat index: ");
   Serial.print(hicleft);
   Serial.print(" *C ");
   Serial.print(hifleft);
@@ -88,15 +96,15 @@ void loop() {
   // Compute heat index in Celsius (isFahreheit = false)
   float hic = dhte.computeHeatIndex(t, h, false);
 
-  Serial.print("Humidity: ");
+  Serial.print("Right Humidity: ");
   Serial.print(h);
   Serial.print(" %\t");
-  Serial.print("Temperature: ");
+  Serial.print("Right Temperature: ");
   Serial.print(t);
   Serial.print(" *C ");
   Serial.print(f);
   Serial.print(" *F\t");
-  Serial.print("Heat index: ");
+  Serial.print("Right Heat index: ");
   Serial.print(hic);
   Serial.print(" *C ");
   Serial.print(hif);
