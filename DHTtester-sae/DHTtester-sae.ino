@@ -4,9 +4,9 @@
 #include "DHT.h"
 
 #define DHTPIN 2     // what digital pin we're connected to
-#define EMANUEL 4 //Secon digital pin.
+#define tempSen 4
 // Uncomment whatever type you're using!
-//#define DHTTYPE DHT11   // DHT 11
+//#define DHTTYPE11 DHT11   // DHT 11
 #define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
 //#define DHTTYPE DHT21   // DHT 21 (AM2301)
 
@@ -22,9 +22,9 @@
 // tweak the timings for faster processors.  This parameter is no longer needed
 // as the current DHT reading algorithm adjusts itself to work on faster procs.
 DHT dht(DHTPIN, DHTTYPE);
-DHT dhte(EMANUEL, DHTTYPE);
+DHT dhte(tempSen, DHTTYPE);
 int PKILL = 5;
-float TEMPLIMIT = 29.0;
+float TEMPLIMIT = 30.0;
 void setup() {
   Serial.begin(9600);
   Serial.println("Formula SAE promises no cell will reach 1000000 C!");
