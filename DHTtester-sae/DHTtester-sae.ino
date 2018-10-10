@@ -1,9 +1,9 @@
 // Example testing sketch for various DHT humidity/temperature sensors
-// Written by ladyada, public domain
+//Original version written by ladyada to the public domain
 
 #include "DHT.h"
-
 #define DHTPIN 2     // what digital pin we're connected to
+
 #define tempSen 4
 // Uncomment whatever type you're using!
 #define DHTTYPE11 DHT11   // DHT 11
@@ -25,6 +25,7 @@ DHT dht(DHTPIN, DHTTYPE11);
 DHT dhte(tempSen, DHTTYPE);
 int PKILL = 5;
 float TEMPLIMIT = 30.0;
+
 void setup() {
   Serial.begin(9600);
   Serial.println("Formula SAE promises no cell will reach 1000000 C!");
@@ -37,6 +38,7 @@ void setup() {
 void loop() {
   // Wait a few seconds between measurements.
   delay(2000);
+
   /**///Print out left (non-Emanuel first)!
   // Reading temperature or humidity takes about 250 milliseconds!
   // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
@@ -45,8 +47,6 @@ void loop() {
   float tleft = dht.readTemperature();
   // Read temperature as Fahrenheit (isFahrenheit = true)
   float fleft = dht.readTemperature(true);
-
-
   if (tleft > TEMPLIMIT){
     Serial.println("SHUTTING DOWN");
     return PKILL;
@@ -54,7 +54,7 @@ void loop() {
   // Check if any reads failed and exit early (to try again).
   if (isnan(hleft) || isnan(tleft) || isnan(fleft)) {
     Serial.println("Failed to read from DHTPIN sensor!");
-    return;
+    //return;
   }
 
   // Compute heat index in Fahrenheit (the default)
@@ -76,7 +76,7 @@ void loop() {
   Serial.print(hifleft);
   Serial.println(" *F");
 
-
+  
 /**/
   // Reading temperature or humidity takes about 250 milliseconds!
   // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
@@ -85,7 +85,7 @@ void loop() {
   float t = dhte.readTemperature();
   // Read temperature as Fahrenheit (isFahrenheit = true)
   float f = dhte.readTemperature(true);
-
+  
   if (t > TEMPLIMIT){
     Serial.println("SHUTTING DOWN");
     return PKILL;
