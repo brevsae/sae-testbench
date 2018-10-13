@@ -1,3 +1,4 @@
+
 /* DHT library
 
 MIT license
@@ -9,7 +10,7 @@ written by Adafruit Industries
 #if ARDUINO >= 100
  #include "Arduino.h"
 #else
- #include "WProgram.h"
+ //#include "WProgram.h"
 #endif
 
 
@@ -49,6 +50,7 @@ class DHT {
  private:
   uint8_t data[5];
   uint8_t _pin, _type;
+    // we'll come back to this
   #ifdef __AVR
     // Use direct GPIO access on an 8-bit AVR so keep track of the port and bitmask
     // for the digital pin connected to the DHT.  Other platforms will use digitalRead.
