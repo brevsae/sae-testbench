@@ -2,18 +2,24 @@
 //Original version written by ladyada to the public domain
 
 #include "DHT.h"
-#define DHTPIN 2     // what digital pin we're connected to
+#include "Pushbutton.h"
 
-#define tempSen 4
+#define tempSen1 2     // what digital pin we're connected to
+#define tempSen2 3
+#define tempSen3 4
+
+#define killPin 5 
+#define onPin 8
+
 // Uncomment whatever type you're using!
-#define DHTTYPE11 DHT11   // DHT 11
-#define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
+#define DHTType11 DHT11   // DHT 11
+#define DHTType22 DHT22   // DHT 22  (AM2302), AM2321
 //#define DHTTYPE DHT21   // DHT 21 (AM2301)
 
 // Connect pin 1 (on the left) of the sensor to +5V
 // NOTE: If using a board with 3.3V logic like an Arduino Due connect pin 1
 // to 3.3V instead of 5V!
-// Connect pin 2 of the sensor to whatever your DHTPIN is
+// Connect pin 2 of the sensor to whatever your tempSen1 is
 // Connect pin 4 (on the right) of the sensor to GROUND
 // Connect a 10K resistor from pin 2 (data) to pin 1 (power) of the sensor
 
@@ -21,8 +27,12 @@
 // Note that older versions of this library took an optional third parameter to
 // tweak the timings for faster processors.  This parameter is no longer needed
 // as the current DHT reading algorithm adjusts itself to work on faster procs.
-DHT dht(DHTPIN, DHTTYPE11);
-DHT dhte(tempSen, DHTTYPE);
+DHT dht(tempSen1, DHTType11);
+DHT dht1(tempSen2, DHTType22);
+DHT dht2(tempSen3, DHTType22);
+
+Pushbutton killSwitch(killPin);
+
 int PKILL = 5;
 float TEMPLIMIT = 30.0;
 
@@ -32,7 +42,12 @@ void setup() {
 
 // Running 2 begin functions is causing trouble!
   //dht.begin();
-  dhte.begin();
+  digitalWrite(onPin, HIGH);
+  dht.begin();
+//  delay(1000);
+//  dht1.begin();
+//  delay(1000);
+//  dht2.begin();
 }
 
 void loop() {
@@ -47,13 +62,15 @@ void loop() {
   float tleft = dht.readTemperature();
   // Read temperature as Fahrenheit (isFahrenheit = true)
   float fleft = dht.readTemperature(true);
-  if (tleft > TEMPLIMIT){
-    Serial.println("SHUTTING DOWN");
+  if (tleft > TEMPLIMIT /*|| killSwitch.isPressed()*/){
+    Serial.println("SHUTTING DOWN 1");
+    digitalWrite(onPin, LOW);
+    digitalWrite(killPin, HIGH);
     return PKILL;
-  } 
+  }
   // Check if any reads failed and exit early (to try again).
   if (isnan(hleft) || isnan(tleft) || isnan(fleft)) {
-    Serial.println("Failed to read from DHTPIN sensor!");
+    Serial.println("Failed to read from tempSen1 sensor!");
     //return;
   }
 
@@ -76,30 +93,74 @@ void loop() {
   Serial.print(hifleft);
   Serial.println(" *F");
 
-  
-/**/
-  // Reading temperature or humidity takes about 250 milliseconds!
-  // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
-  float h = dhte.readHumidity();
+  ///new sensor being read
+  Serial.println("------------------------------------------");
+
+   hleft = dht1.readHumidity();
   // Read temperature as Celsius (the default)
-  float t = dhte.readTemperature();
+   tleft = dht1.readTemperature();
   // Read temperature as Fahrenheit (isFahrenheit = true)
-  float f = dhte.readTemperature(true);
-  
-  if (t > TEMPLIMIT){
-    Serial.println("SHUTTING DOWN");
+   fleft = dht1.readTemperature(true);
+  if (tleft > TEMPLIMIT /*|| killSwitch.isPressed()*/){
+    Serial.println("SHUTTING DOWN2");
+    digitalWrite(onPin, LOW);
+    digitalWrite(killPin, HIGH);
     return PKILL;
   }
   // Check if any reads failed and exit early (to try again).
-  if (isnan(h) || isnan(t) || isnan(f)) {
-    Serial.println("Failed to read from tempSen sensor!");
+  if (isnan(hleft) || isnan(tleft) || isnan(fleft)) {
+    Serial.println("Failed to read from tempSen2 sensor!");
     //return;
   }
 
   // Compute heat index in Fahrenheit (the default)
-  float hif = dhte.computeHeatIndex(f, h);
+   hifleft = dht1.computeHeatIndex(fleft, hleft);
   // Compute heat index in Celsius (isFahreheit = false)
-  float hic = dhte.computeHeatIndex(t, h, false);
+   hicleft = dht1.computeHeatIndex(tleft, hleft, false);
+
+  Serial.print("Left Humidity: ");
+  Serial.print(hleft);
+  Serial.print(" %\t");
+  Serial.print("Left Temperature: ");
+  Serial.print(tleft);
+  Serial.print(" *C ");
+  Serial.print(fleft);
+  Serial.print(" *F\t");
+  Serial.print("Left Heat index: ");
+  Serial.print(hicleft);
+  Serial.print(" *C ");
+  Serial.print(hifleft);
+  Serial.println(" *F");
+
+  //new sensor being read
+  Serial.println("------------------------------------------");
+
+
+/**/
+  // Reading temperature or humidity takes about 250 milliseconds!
+  // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
+  float h = dht2.readHumidity();
+  // Read temperature as Celsius (the default)
+  float t = dht2.readTemperature();
+  // Read temperature as Fahrenheit (isFahrenheit = true)
+  float f = dht2.readTemperature(true);
+
+  if (t > TEMPLIMIT /*|| killSwitch.isPressed()*/){
+    Serial.println("SHUTTING DOWN 3");
+     digitalWrite(onPin, LOW);
+    digitalWrite(killPin, HIGH);
+    return PKILL;
+  }
+  // Check if any reads failed and exit early (to try again).
+  if (isnan(h) || isnan(t) || isnan(f)) {
+    Serial.println("Failed to read from tempSen3 sensor!");
+    //return;
+  }
+
+  // Compute heat index in Fahrenheit (the default)
+  float hif = dht2.computeHeatIndex(f, h);
+  // Compute heat index in Celsius (isFahreheit = false)
+  float hic = dht2.computeHeatIndex(t, h, false);
 
   Serial.print("Right Humidity: ");
   Serial.print(h);
@@ -114,4 +175,8 @@ void loop() {
   Serial.print(" *C ");
   Serial.print(hif);
   Serial.println(" *F");
+
+
+  Serial.println("---------------DONE------------------");
+
 }
