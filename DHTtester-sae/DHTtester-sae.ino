@@ -59,31 +59,33 @@ void loop() {
   // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
   float hleft = dht.readHumidity();
   // Read temperature as Celsius (the default)
-  float tleft = dht.readTemperature();
+  float t1 = dht.readTemperature();
   // Read temperature as Fahrenheit (isFahrenheit = true)
   float fleft = dht.readTemperature(true);
-  if (tleft > TEMPLIMIT /*|| killSwitch.isPressed()*/){
+  if (t1 > TEMPLIMIT /*|| killSwitch.isPressed()*/){
     Serial.println("SHUTTING DOWN 1");
     digitalWrite(onPin, LOW);
     digitalWrite(killPin, HIGH);
     return PKILL;
   }
   // Check if any reads failed and exit early (to try again).
-  if (isnan(hleft) || isnan(tleft) || isnan(fleft)) {
-    Serial.println("Failed to read from tempSen1 sensor!");
+  if (isnan(hleft) || isnan(t1) || isnan(fleft)) {
+    Serial.println("Failed to read from tempSen1 sensor!"); 
+    //digitalWrite(onPin, LOW);
+    //digitalWrite(killPin, HIGH);
     //return;
   }
 
   // Compute heat index in Fahrenheit (the default)
   float hifleft = dht.computeHeatIndex(fleft, hleft);
   // Compute heat index in Celsius (isFahreheit = false)
-  float hicleft = dht.computeHeatIndex(tleft, hleft, false);
+  float hicleft = dht.computeHeatIndex(t1, hleft, false);
 
   Serial.print("Left Humidity: ");
   Serial.print(hleft);
   Serial.print(" %\t");
   Serial.print("Left Temperature: ");
-  Serial.print(tleft);
+  Serial.print(t1);
   Serial.print(" *C ");
   Serial.print(fleft);
   Serial.print(" *F\t");
@@ -98,31 +100,33 @@ void loop() {
 
    hleft = dht1.readHumidity();
   // Read temperature as Celsius (the default)
-   tleft = dht1.readTemperature();
+   float t2 = dht1.readTemperature();
   // Read temperature as Fahrenheit (isFahrenheit = true)
    fleft = dht1.readTemperature(true);
-  if (tleft > TEMPLIMIT /*|| killSwitch.isPressed()*/){
+  if (t2 > TEMPLIMIT /*|| killSwitch.isPressed()*/){
     Serial.println("SHUTTING DOWN2");
     digitalWrite(onPin, LOW);
     digitalWrite(killPin, HIGH);
     return PKILL;
   }
   // Check if any reads failed and exit early (to try again).
-  if (isnan(hleft) || isnan(tleft) || isnan(fleft)) {
+  if (isnan(hleft) || isnan(t2) || isnan(fleft)) {
     Serial.println("Failed to read from tempSen2 sensor!");
+    //digitalWrite(onPin, LOW);
+   // digitalWrite(killPin, HIGH);
     //return;
   }
 
   // Compute heat index in Fahrenheit (the default)
    hifleft = dht1.computeHeatIndex(fleft, hleft);
   // Compute heat index in Celsius (isFahreheit = false)
-   hicleft = dht1.computeHeatIndex(tleft, hleft, false);
+   hicleft = dht1.computeHeatIndex(t2, hleft, false);
 
   Serial.print("Left Humidity: ");
   Serial.print(hleft);
   Serial.print(" %\t");
   Serial.print("Left Temperature: ");
-  Serial.print(tleft);
+  Serial.print(t2);
   Serial.print(" *C ");
   Serial.print(fleft);
   Serial.print(" *F\t");
@@ -141,32 +145,34 @@ void loop() {
   // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
   float h = dht2.readHumidity();
   // Read temperature as Celsius (the default)
-  float t = dht2.readTemperature();
+  float t3 = dht2.readTemperature();
   // Read temperature as Fahrenheit (isFahrenheit = true)
   float f = dht2.readTemperature(true);
 
-  if (t > TEMPLIMIT /*|| killSwitch.isPressed()*/){
+  if (t3 > TEMPLIMIT /*|| killSwitch.isPressed()*/){
     Serial.println("SHUTTING DOWN 3");
      digitalWrite(onPin, LOW);
     digitalWrite(killPin, HIGH);
     return PKILL;
   }
   // Check if any reads failed and exit early (to try again).
-  if (isnan(h) || isnan(t) || isnan(f)) {
+  if (isnan(h) || isnan(t3) || isnan(f)) {
     Serial.println("Failed to read from tempSen3 sensor!");
+    //digitalWrite(onPin, LOW);
+    //digitalWrite(killPin, HIGH);
     //return;
   }
 
   // Compute heat index in Fahrenheit (the default)
   float hif = dht2.computeHeatIndex(f, h);
   // Compute heat index in Celsius (isFahreheit = false)
-  float hic = dht2.computeHeatIndex(t, h, false);
+  float hic = dht2.computeHeatIndex(t3, h, false);
 
   Serial.print("Right Humidity: ");
   Serial.print(h);
   Serial.print(" %\t");
   Serial.print("Right Temperature: ");
-  Serial.print(t);
+  Serial.print(t3);
   Serial.print(" *C ");
   Serial.print(f);
   Serial.print(" *F\t");
@@ -177,6 +183,12 @@ void loop() {
   Serial.println(" *F");
 
 
-  Serial.println("---------------DONE------------------");
+  Serial.println("---------------DONE------------------"); 
+  if (isnan(t1) && isnan(t2) && isnan(t3)) {
+    Serial.println("Failed to read from all Temperature Sensors! Emergency Shut Down! ");
+    digitalWrite(onPin, LOW);
+    digitalWrite(killPin, HIGH);
+    //return;
+  }
 
 }
