@@ -1,7 +1,9 @@
 // Example testing sketch for various DHT humidity/temperature sensors
 //Original version written by ladyada to the public domain
 
-#include "DHT.h"
+#include <Adafruit_Sensor.h>
+#include <DHT.h>
+#include <DHT_U.h>
 //#include "Pushbutton.h"
 
 #define tempSen1 2     // what digital pin we're connected to
@@ -11,7 +13,8 @@
 
 #define killPin 5 
 #define onPin 8
-
+//Specify digital pin on the Arduino that the positive lead of piezo buzzer is attached.
+int piezoPin = 9;
 // Uncomment whatever type you're using!
 #define DHTType11 DHT11   // DHT 11
 #define DHTType22 DHT22   // DHT 22  (AM2302), AM2321
@@ -28,15 +31,15 @@
 // Note that older versions of this library took an optional third parameter to
 // tweak the timings for faster processors.  This parameter is no longer needed
 // as the current DHT reading algorithm adjusts itself to work on faster procs.
-DHT dht0(tempSen1, DHTType11);
-DHT dht1(tempSen2, DHTType11);
-DHT dht2(tempSen3, DHTType11);
-DHT dht3(tempSen4, DHTType11);
+DHT dht0(tempSen1, DHTType22);
+DHT dht1(tempSen2, DHTType22);
+DHT dht2(tempSen3, DHTType22);
+DHT dht3(tempSen4, DHTType22);
 
 //Pushbutton killSwitch(killPin);
 
 int PKILL = 6;
-float TEMPLIMIT = 50.5;
+float TEMPLIMIT = 50.0;
 
 void setup() {
   Serial.begin(9600);
@@ -48,13 +51,13 @@ void setup() {
   dht0.begin();
 //  delay(1000);
 //  dht1.begin();
-//  delay(1000);
+  delay(100);
 //  dht2.begin();
 }
 
 void loop() {
   // Wait a few seconds between measurements.
-  delay(2000);
+  delay(6000);
 
   /**///Print out left (non-Emanuel first)!
   // Reading temperature or humidity takes about 250 milliseconds!
@@ -68,6 +71,12 @@ void loop() {
     Serial.println("SHUTTING DOWN 1");
     digitalWrite(onPin, LOW);
     digitalWrite(killPin, HIGH);
+     /*Tone needs 2 arguments, but can take three
+    1) Pin#
+    2) Frequency - this is in hertz (cycles per second) which determines the pitch of the noise made
+    3) Duration - how long teh tone plays
+  */
+    tone(piezoPin, 1000, 5000);
     //return PKILL;
   }
   // Check if any reads failed and exit early (to try again).
@@ -109,6 +118,7 @@ void loop() {
     Serial.println("SHUTTING DOWN2");
     digitalWrite(onPin, LOW);
     digitalWrite(killPin, HIGH);
+    tone(piezoPin, 1000, 5000);
     //return PKILL;
   }
   // Check if any reads failed and exit early (to try again).
@@ -155,6 +165,7 @@ void loop() {
     Serial.println("SHUTTING DOWN 3");
      digitalWrite(onPin, LOW);
     digitalWrite(killPin, HIGH);
+    tone(piezoPin, 1000, 5000);
     //return PKILL;
   }
   // Check if any reads failed and exit early (to try again).
@@ -196,11 +207,12 @@ void loop() {
     Serial.println("SHUTTING DOWN2");
     digitalWrite(onPin, LOW);
     digitalWrite(killPin, HIGH);
+    tone(piezoPin, 1000, 5000);
     //return PKILL;
   }
   // Check if any reads failed and exit early (to try again).
   if (isnan(hleft) || isnan(t4) || isnan(fleft)) {
-    Serial.println("Failed to read from tempSen2 sensor!");
+    Serial.println("Failed to read from tempSen4 sensor!");
     //digitalWrite(onPin, LOW);
    // digitalWrite(killPin, HIGH);
     //return;
@@ -231,6 +243,7 @@ void loop() {
     Serial.println("Failed to read from all Temperature Sensors! Emergency Shut Down! ");
     digitalWrite(onPin, LOW);
     digitalWrite(killPin, HIGH);
+    tone(piezoPin, 1000, 5000);
     //return;
   }
 
