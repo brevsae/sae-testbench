@@ -2,11 +2,12 @@
 //Original version written by ladyada to the public domain
 
 #include "DHT.h"
-#include "Pushbutton.h"
+//#include "Pushbutton.h"
 
 #define tempSen1 2     // what digital pin we're connected to
 #define tempSen2 3
 #define tempSen3 4
+#define tempSen4 5
 
 #define killPin 5 
 #define onPin 8
@@ -27,14 +28,15 @@
 // Note that older versions of this library took an optional third parameter to
 // tweak the timings for faster processors.  This parameter is no longer needed
 // as the current DHT reading algorithm adjusts itself to work on faster procs.
-DHT dht(tempSen1, DHTType11);
-DHT dht1(tempSen2, DHTType22);
-DHT dht2(tempSen3, DHTType22);
+DHT dht0(tempSen1, DHTType11);
+DHT dht1(tempSen2, DHTType11);
+DHT dht2(tempSen3, DHTType11);
+DHT dht3(tempSen4, DHTType11);
 
-Pushbutton killSwitch(killPin);
+//Pushbutton killSwitch(killPin);
 
-int PKILL = 5;
-float TEMPLIMIT = 30.0;
+int PKILL = 6;
+float TEMPLIMIT = 50.5;
 
 void setup() {
   Serial.begin(9600);
@@ -43,7 +45,7 @@ void setup() {
 // Running 2 begin functions is causing trouble!
   //dht.begin();
   digitalWrite(onPin, HIGH);
-  dht.begin();
+  dht0.begin();
 //  delay(1000);
 //  dht1.begin();
 //  delay(1000);
@@ -57,16 +59,16 @@ void loop() {
   /**///Print out left (non-Emanuel first)!
   // Reading temperature or humidity takes about 250 milliseconds!
   // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
-  float hleft = dht.readHumidity();
+  float hleft = dht0.readHumidity();
   // Read temperature as Celsius (the default)
-  float t1 = dht.readTemperature();
+  float t1 = dht0.readTemperature();
   // Read temperature as Fahrenheit (isFahrenheit = true)
-  float fleft = dht.readTemperature(true);
+  float fleft = dht0.readTemperature(true);
   if (t1 > TEMPLIMIT /*|| killSwitch.isPressed()*/){
     Serial.println("SHUTTING DOWN 1");
     digitalWrite(onPin, LOW);
     digitalWrite(killPin, HIGH);
-    return PKILL;
+    //return PKILL;
   }
   // Check if any reads failed and exit early (to try again).
   if (isnan(hleft) || isnan(t1) || isnan(fleft)) {
@@ -77,9 +79,9 @@ void loop() {
   }
 
   // Compute heat index in Fahrenheit (the default)
-  float hifleft = dht.computeHeatIndex(fleft, hleft);
+  float hifleft = dht0.computeHeatIndex(fleft, hleft);
   // Compute heat index in Celsius (isFahreheit = false)
-  float hicleft = dht.computeHeatIndex(t1, hleft, false);
+  float hicleft = dht0.computeHeatIndex(t1, hleft, false);
 
   Serial.print("Left Humidity: ");
   Serial.print(hleft);
@@ -107,7 +109,7 @@ void loop() {
     Serial.println("SHUTTING DOWN2");
     digitalWrite(onPin, LOW);
     digitalWrite(killPin, HIGH);
-    return PKILL;
+    //return PKILL;
   }
   // Check if any reads failed and exit early (to try again).
   if (isnan(hleft) || isnan(t2) || isnan(fleft)) {
@@ -153,7 +155,7 @@ void loop() {
     Serial.println("SHUTTING DOWN 3");
      digitalWrite(onPin, LOW);
     digitalWrite(killPin, HIGH);
-    return PKILL;
+    //return PKILL;
   }
   // Check if any reads failed and exit early (to try again).
   if (isnan(h) || isnan(t3) || isnan(f)) {
@@ -182,9 +184,50 @@ void loop() {
   Serial.print(hif);
   Serial.println(" *F");
 
+///new sensor being read
+  Serial.println("------------------------------------------");
+
+   hleft = dht3.readHumidity();
+  // Read temperature as Celsius (the default)
+   float t4 = dht3.readTemperature();
+  // Read temperature as Fahrenheit (isFahrenheit = true)
+   fleft = dht3.readTemperature(true);
+  if (t4 > TEMPLIMIT /*|| killSwitch.isPressed()*/){
+    Serial.println("SHUTTING DOWN2");
+    digitalWrite(onPin, LOW);
+    digitalWrite(killPin, HIGH);
+    //return PKILL;
+  }
+  // Check if any reads failed and exit early (to try again).
+  if (isnan(hleft) || isnan(t4) || isnan(fleft)) {
+    Serial.println("Failed to read from tempSen2 sensor!");
+    //digitalWrite(onPin, LOW);
+   // digitalWrite(killPin, HIGH);
+    //return;
+  }
+
+  // Compute heat index in Fahrenheit (the default)
+   hifleft = dht3.computeHeatIndex(fleft, hleft);
+  // Compute heat index in Celsius (isFahreheit = false)
+   hicleft = dht3.computeHeatIndex(t4, hleft, false);
+
+  Serial.print("Left Humidity: ");
+  Serial.print(hleft);
+  Serial.print(" %\t");
+  Serial.print("Left Temperature: ");
+  Serial.print(t4);
+  Serial.print(" *C ");
+  Serial.print(fleft);
+  Serial.print(" *F\t");
+  Serial.print("Left Heat index: ");
+  Serial.print(hicleft);
+  Serial.print(" *C ");
+  Serial.print(hifleft);
+  Serial.println(" *F");
+
 
   Serial.println("---------------DONE------------------"); 
-  if (isnan(t1) && isnan(t2) && isnan(t3)) {
+  if (isnan(t1) && isnan(t2) && isnan(t3)&&isnan(t4)) {
     Serial.println("Failed to read from all Temperature Sensors! Emergency Shut Down! ");
     digitalWrite(onPin, LOW);
     digitalWrite(killPin, HIGH);
