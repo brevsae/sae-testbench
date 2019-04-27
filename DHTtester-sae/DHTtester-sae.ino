@@ -22,7 +22,7 @@
 #define onPin 8
 //Specify digital pin on the Arduino that the positive lead of piezo buzzer is attached.
 //int piezoPin = 9;
-LiquidCrystal tempLCD(lcd5,lcd4, lcd3, lcd2,lcd1); 
+//LiquidCrystal tempLCD(lcd5,lcd4, lcd3, lcd2,lcd1); 
 // Uncomment whatever type you're using!
 #define DHTType11 DHT11   // DHT 11
 #define DHTType22 DHT22   // DHT 22  (AM2302), AM2321
@@ -56,7 +56,7 @@ void setup() {
 
 // Running 2 begin functions is causing trouble!
   //dht.begin();
-  tempLCD.begin(16,2); //We believe this will start the screen at the 16th by 2nd pixel.
+  //tempLCD.begin(16,2); //We believe this will start the screen at the 16th by 2nd pixel.
   digitalWrite(onPin, HIGH);
   dht0.begin();
 //  delay(1000);
@@ -256,9 +256,9 @@ void loop() {
 	if(t4>currentPeaktmp)
 		currentPeaktmp= t4;
 	delay(50);
-	tempLCD.clear();
+	//tempLCD.clear();
 	PeakTmp = String(currentPeaktmp);
-	tempLCD.print(concat(PeakTemp, "C"));
+	//tempLCD.print(concat(PeakTemp, "C"));
 	
 
   Serial.println("---------------DONE------------------"); 
