@@ -4,7 +4,7 @@
 #include <Adafruit_Sensor.h>
 #include <DHT.h>
 #include <DHT_U.h>
-#include <LiquidCrystal.h>
+//#include <LiquidCrystal.h>
 //#include "Pushbutton.h"
 
 #define tempSen1 2     // what digital pin we're connected to
@@ -52,8 +52,10 @@ float currentPeaktmp = 0.0;
 String PeakTmp;
 void setup() {
   Serial.begin(9600);
-  Serial.println("Formula SAE promises no cell will reach 1000000 C!");
-
+  PeakTmp = "Formula SAE promises no cell will reach reach above "; 
+  PeakTmp.concat(String(TEMPLIMIT) + " C!");
+  Serial.println(PeakTmp);
+  PeakTmp ="";
 // Running 2 begin functions is causing trouble!
   //dht.begin();
   //tempLCD.begin(16,2); //We believe this will start the screen at the 16th by 2nd pixel.
@@ -86,7 +88,7 @@ void loop() {
     2) Frequency - this is in hertz (cycles per second) which determines the pitch of the noise made
     3) Duration - how long teh tone plays
   */
-    tone(piezoPin, 1000, 5000);
+    //tone(piezoPin, 1000, 5000);
     //return PKILL;
   }
   // Check if any reads failed and exit early (to try again).
@@ -128,7 +130,7 @@ void loop() {
     Serial.println("SHUTTING DOWN2");
     digitalWrite(onPin, LOW);
     digitalWrite(killPin, HIGH);
-    tone(piezoPin, 1000, 5000);
+    //tone(piezoPin, 1000, 5000);
     //return PKILL;
   }
   // Check if any reads failed and exit early (to try again).
@@ -175,7 +177,7 @@ void loop() {
     Serial.println("SHUTTING DOWN 3");
      digitalWrite(onPin, LOW);
     digitalWrite(killPin, HIGH);
-    tone(piezoPin, 1000, 5000);
+    //tone(piezoPin, 1000, 5000);
     //return PKILL;
   }
   // Check if any reads failed and exit early (to try again).
@@ -217,7 +219,7 @@ void loop() {
     Serial.println("SHUTTING DOWN2");
     digitalWrite(onPin, LOW);
     digitalWrite(killPin, HIGH);
-    tone(piezoPin, 1000, 5000);
+    //tone(piezoPin, 1000, 5000);
     //return PKILL;
   }
   // Check if any reads failed and exit early (to try again).
@@ -257,13 +259,13 @@ void loop() {
 		//currentPeaktmp= t4;
 	delay(50);
 	//tempLCD.clear();
-	PeakTmp = "The highest temperature for the battery was:\b";
-	PeakTmp = concat(PeakTmp, String(currentPeaktmp));
+	PeakTmp = "The highest temperature for the battery was:\n";
+	PeakTmp.concat(String(currentPeaktmp));
 	//tempLCD.print(concat(PeakTemp, "C"));
-	PeakTmp = concat(PeakTemp, " C.\nThe current delta temperature between the battery and ambient is:\n");
+	PeakTmp.concat(" C.\nThe current delta temperature between the battery and ambient is:\n");
 	
-	PeakTmp = concat(PeakTemp, String((currentPeaktmp - t4)));
-	PeakTmp = concat(PeakTemp, " C.\n");
+	PeakTmp.concat(String((currentPeaktmp - t4)));
+	PeakTmp.concat(" C.\n");
 	
 	Serial.println(PeakTmp);
 
@@ -272,7 +274,7 @@ void loop() {
     Serial.println("Failed to read from all Temperature Sensors! Emergency Shut Down! ");
     digitalWrite(onPin, LOW);
     digitalWrite(killPin, HIGH);
-    tone(piezoPin, 1000, 5000);
+    //tone(piezoPin, 1000, 5000);
     //return;
   }
 
