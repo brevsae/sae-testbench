@@ -4,7 +4,7 @@
 #include <Adafruit_Sensor.h>
 #include <DHT.h>
 #include <DHT_U.h>
-#include <LiquidCrystal.h>
+//#include <LiquidCrystal.h>
 //#include "Pushbutton.h"
 
 #define tempSen1 2     // what digital pin we're connected to
@@ -52,8 +52,10 @@ float currentPeaktmp = 0.0;
 String PeakTmp;
 void setup() {
   Serial.begin(9600);
-  Serial.println("Formula SAE promises no cell will reach 1000000 C!");
-
+  PeakTmp = "Formula SAE promises no cell will reach reach above "; 
+  PeakTmp.concat(String(TEMPLIMIT) + " C!");
+  Serial.println(PeakTmp);
+  PeakTmp ="";
 // Running 2 begin functions is causing trouble!
   //dht.begin();
   //tempLCD.begin(16,2); //We believe this will start the screen at the 16th by 2nd pixel.
@@ -257,13 +259,13 @@ void loop() {
 		//currentPeaktmp= t4;
 	delay(50);
 	//tempLCD.clear();
-	PeakTmp = "The highest temperature for the battery was:\b";
-	PeakTmp = concat(PeakTmp, String(currentPeaktmp));
+	PeakTmp = "The highest temperature for the battery was:\n";
+	PeakTmp.concat(String(currentPeaktmp));
 	//tempLCD.print(concat(PeakTemp, "C"));
-	PeakTmp = concat(PeakTemp, " C.\nThe current delta temperature between the battery and ambient is:\n");
+	PeakTmp.concat(" C.\nThe current delta temperature between the battery and ambient is:\n");
 	
-	PeakTmp = concat(PeakTemp, String((currentPeaktmp - t4)));
-	PeakTmp = concat(PeakTemp, " C.\n");
+	PeakTmp.concat(String((currentPeaktmp - t4)));
+	PeakTmp.concat(" C.\n");
 	
 	Serial.println(PeakTmp);
 
