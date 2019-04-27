@@ -210,7 +210,7 @@ void loop() {
 
    hleft = dht3.readHumidity();
   // Read temperature as Celsius (the default)
-   float t4 = dht3.readTemperature();
+   float t4 = dht3.readTemperature(); //t4 holds the OUTSIDE temperature!
   // Read temperature as Fahrenheit (isFahrenheit = true)
    fleft = dht3.readTemperature(true);
   if (t4 > TEMPLIMIT /*|| killSwitch.isPressed()*/){
@@ -233,10 +233,10 @@ void loop() {
   // Compute heat index in Celsius (isFahreheit = false)
    hicleft = dht3.computeHeatIndex(t4, hleft, false);
 
-  Serial.print("Left Humidity: ");
+  Serial.print("Outside Left Humidity: ");
   Serial.print(hleft);
   Serial.print(" %\t");
-  Serial.print("Left Temperature: ");
+  Serial.print("Outside Left Temperature: ");
   Serial.print(t4);
   Serial.print(" *C ");
   Serial.print(fleft);
@@ -253,13 +253,19 @@ void loop() {
 		currentPeaktmp= t2;
 	if(t3>currentPeaktmp)
 		currentPeaktmp= t3;
-	if(t4>currentPeaktmp)
-		currentPeaktmp= t4;
+	//if(t4>currentPeaktmp)
+		//currentPeaktmp= t4;
 	delay(50);
 	//tempLCD.clear();
-	PeakTmp = String(currentPeaktmp);
+	PeakTmp = "The highest temperature for the battery was:\b";
+	PeakTmp = concat(PeakTmp, String(currentPeaktmp));
 	//tempLCD.print(concat(PeakTemp, "C"));
+	PeakTmp = concat(PeakTemp, " C.\nThe current delta temperature between the battery and ambient is:\n");
 	
+	PeakTmp = concat(PeakTemp, String((currentPeaktmp - t4)));
+	PeakTmp = concat(PeakTemp, " C.\n");
+	
+	Serial.println(PeakTmp);
 
   Serial.println("---------------DONE------------------"); 
   if (isnan(t1) && isnan(t2) && isnan(t3)&&isnan(t4)) {
