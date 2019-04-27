@@ -86,7 +86,7 @@ void loop() {
     2) Frequency - this is in hertz (cycles per second) which determines the pitch of the noise made
     3) Duration - how long teh tone plays
   */
-    tone(piezoPin, 1000, 5000);
+    //tone(piezoPin, 1000, 5000);
     //return PKILL;
   }
   // Check if any reads failed and exit early (to try again).
@@ -128,7 +128,7 @@ void loop() {
     Serial.println("SHUTTING DOWN2");
     digitalWrite(onPin, LOW);
     digitalWrite(killPin, HIGH);
-    tone(piezoPin, 1000, 5000);
+    //tone(piezoPin, 1000, 5000);
     //return PKILL;
   }
   // Check if any reads failed and exit early (to try again).
@@ -175,7 +175,7 @@ void loop() {
     Serial.println("SHUTTING DOWN 3");
      digitalWrite(onPin, LOW);
     digitalWrite(killPin, HIGH);
-    tone(piezoPin, 1000, 5000);
+    //tone(piezoPin, 1000, 5000);
     //return PKILL;
   }
   // Check if any reads failed and exit early (to try again).
@@ -217,7 +217,7 @@ void loop() {
     Serial.println("SHUTTING DOWN2");
     digitalWrite(onPin, LOW);
     digitalWrite(killPin, HIGH);
-    tone(piezoPin, 1000, 5000);
+    //tone(piezoPin, 1000, 5000);
     //return PKILL;
   }
   // Check if any reads failed and exit early (to try again).
@@ -266,7 +266,7 @@ void loop() {
     Serial.println("Failed to read from all Temperature Sensors! Emergency Shut Down! ");
     digitalWrite(onPin, LOW);
     digitalWrite(killPin, HIGH);
-    tone(piezoPin, 1000, 5000);
+    //tone(piezoPin, 1000, 5000);
     //return;
   }
 
